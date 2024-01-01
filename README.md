@@ -38,6 +38,8 @@ Must relocate as follows:
 - Up to 16KB of Foenixcorn MOS to physical blocks $16, $17.
 - Acorn language ROM to physical blocks $14, $15.
 - 'Persistent code block' to physical block $08.
+- Host code shouldn't need to be relocated.  Be sure to keep it away from
+  block $05, which is where the persistent code block gets loaded.
 
 ### Scaffolding
 
