@@ -275,7 +275,7 @@ MAINZP      MAC
             PUT   AUXMEM.INIT
             PUT   AUXMEM.VERS
             PUT   AUXMEM.VDU
-            PUT   AUXMEM.HGR
+*            PUT   AUXMEM.HGR
 *            PUT   AUXMEM.SHR
             PUT   AUXMEM.HOSTFS
             PUT   AUXMEM.OSCLI
@@ -287,7 +287,7 @@ MAINZP      MAC
             PUT   MAINMEM.FSEQU
             PUT   MAINMEM.INIT
             PUT   MAINMEM.SVC
-            PUT   MAINMEM.HGR
+*            PUT   MAINMEM.HGR
 *            PUT   MAINMEM.SHR
             PUT   MAINMEM.PATH
             PUT   MAINMEM.WILD
@@ -298,7 +298,7 @@ MAINZP      MAC
 *            PUT   MAINMEM.ENSQFREQ
 *            PUT   MAINMEM.MOCK
 *            PUT   MAINMEM.MOCKFREQ
-            PUT   MAINMEM.FONT8
+*            PUT   MAINMEM.FONT8
 
 * Automatically save the object file:
             SAV   APLCORN.SYSTEM

@@ -115,23 +115,25 @@ DISCONN     LDA   MACHID
 
             JSR   RESETHW           ; Reset any hardware required
 
-            LDA   #<:FDFILE
-            STA   OPENPL+1
-            LDA   #>:FDFILE
-            STA   OPENPL+2
-            LDA   #>FDRAWADDR      ; Address in main
-            LDX   #<FDRAWADDR
-            CLC                    ; Load into main
-            JSR   LOADCODE
+* DO NOT LOAD FDRAW LIB
+*           LDA   #<:FDFILE
+*           STA   OPENPL+1
+*           LDA   #>:FDFILE
+*           STA   OPENPL+2
+*           LDA   #>FDRAWADDR      ; Address in main
+*           LDX   #<FDRAWADDR
+*           CLC                    ; Load into main
+*           JSR   LOADCODE
 
-            LDA   #<:FNTFILE
-            STA   OPENPL+1
-            LDA   #>:FNTFILE
-            STA   OPENPL+2
-            LDA   #>FONTADDR       ; Address in main
-            LDX   #<FONTADDR
-            CLC                    ; Load into main
-            JSR   LOADCODE
+* DO NOT LOAD FONT FILE
+*           LDA   #<:FNTFILE
+*           STA   OPENPL+1
+*           LDA   #>:FNTFILE
+*           STA   OPENPL+2
+*           LDA   #>FONTADDR       ; Address in main
+*           LDX   #<FONTADDR
+*           CLC                    ; Load into main
+*           JSR   LOADCODE
 
             LDA   #<MOSSHIM        ; Start address of MOS shim
             STA   A1L
@@ -163,7 +165,8 @@ DISCONN     LDA   MACHID
             LDA   #>GSBRK
             STA   BREAKV+1
 
-            JSR   GFXINIT          ; Initialize FDraw graphics
+*           JSR   GFXINIT          ; Initialize FDraw graphics
+                                   ; DISABLED
 
             TSX                    ; Save SP at $0100 in aux
             >>>   ALTZP
@@ -173,8 +176,8 @@ DISCONN     LDA   MACHID
 
 * Filenames for loaded binaries - we're gonna address these later
 
-:FDFILE     STR   "FDRAW.FAST"     ; Filename for FDraw lib
-:FNTFILE    STR   "FONT.DAT"       ; Filename for bitmap font
+*:FDFILE     STR   "FDRAW.FAST"     ; Filename for FDraw lib
+*:FNTFILE    STR   "FONT.DAT"       ; Filename for bitmap font
 
 GETPFXPARM  HEX   01                ; One parameter
             DW    CMDPATH           ; Get prefix to CMDPATH

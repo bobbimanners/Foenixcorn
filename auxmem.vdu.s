@@ -397,7 +397,8 @@ PRCHR6        STA   (VDUADDR),Y            ; Store in aux
 PRCHR7        PLA
               BIT   VDUSCREEN
               BPL   :NOTHGR
-              JMP   HGRPRCHAR              ; Write character to HGR
+*             JMP   HGRPRCHAR              ; Write character to HGR
+              RTS                          ; DISABLE HGR
 :NOTHGR       BVC   :NOTSHR
 *             JMP   SHRPRCHAR              ; Write character to SHR
 *                                          ; DISABLE SHR
@@ -776,7 +777,8 @@ VDU22         JSR   NEGCALL                ; Find machine type
               STA   FULLGR                 ; Clear MIXED mode
               BIT   VDUSCREEN
               BPL   :NOTHGR
-              JMP   HGRVDU22               ; b7=1, HGR mode
+*             JMP   HGRVDU22               ; b7=1, HGR mode
+              RTS                          ; DISABLE HGR
 :NOTHGR       BVC   :NOTSHR
 *             JMP   SHRVDU22               ; b6=1, SHR mode
               RTS                          ; DISABLE SHR
@@ -804,7 +806,7 @@ VDU12         STZ   FXLINES
 :L1           JSR   CLREOL
               BIT   VDUSCREEN
               BPL   :NOTHGR
-              JSR   HGRCLREOL
+*             JSR   HGRCLREOL              ; DISABLE HGR
               BRA   :NOTSHR
 :NOTHGR       BVC   :NOTSHR
 *             JSR   SHRCLREOL              ; DISABLE SHR
@@ -857,7 +859,8 @@ CLREOL        JSR   CHARADDR               ; Set VDUADDR=>start of line
 CLREOLDONE    DEC   TXTWINRGT
               BIT   VDUSCREEN
               BPL   :NOHGR
-              JMP   HGRCLREOL              ; Clear an HGR line
+*             JMP   HGRCLREOL              ; Clear an HGR line
+              RTS                          ; DISABLE HGR
 :NOHGR        BVC   :NOSHR
 *             JMP   SHRCLREOL              ; Clear an SHR line
               RTS                          ; DISABLE SHR
@@ -906,7 +909,8 @@ SCROLLER      LDA   TXTWINTOP
               JSR   SCR1LINE
               BIT   VDUSCREEN
               BPL   :NOTHGR
-              JSR   HGRSCR1LINE            ; Scroll HGR screen
+*             JSR   HGRSCR1LINE            ; Scroll HGR screen
+                                           ; DISABLE HGR
               BRA   :NOTSHR
 :NOTHGR       BVC   :NOTSHR
 *             JSR   SHRSCR1LINE            ; Scroll SHR screen
@@ -931,7 +935,8 @@ RSCROLLER     DEC   TXTWINTOP
               JSR   RSCR1LINE
               BIT   VDUSCREEN
               BPL   :NOTHGR
-              JSR   HGRRSCR1LINE           ; Reverse scroll HGR screen
+*             JSR   HGRRSCR1LINE           ; Reverse scroll HGR screen
+                                           ; DISABLE HGR
               BRA   :NOTSHR
 :NOTHGR       BVC   :NOTSHR
 *             JSR   SHRRSCR1LINE           ; Reverse scroll SHR screen
@@ -1063,7 +1068,8 @@ SCR1LINEGS    LDX   TXTWINLFT
 * VDU 16 - CLG, clear graphics window
 VDU16         BIT   VDUSCREEN
               BPL   :NOTHGR
-              JMP   HGRCLEAR
+*             JMP   HGRCLEAR               ; DISABLE HGR
+              RTS
 :NOTHGR       BVC   :NOTSHR
 *             JMP   SHRCLEAR               ; DISABLE SHR
 :NOTSHR       RTS
@@ -1089,7 +1095,8 @@ VDU20LP       STA   TXTFGD,X               ; Clear all colours
               JSR   SETTCOL                ; Set txt background
               LDX   #$00                   ; GCOL 'set' mode
               LDA   #$80                   ; Black background
-              JSR   HGRSETGCOL             ; Set HGR background
+*             JSR   HGRSETGCOL             ; Set HGR background
+                                           ; DISABLE HGR
               BIT   VDUBANK
               BPL   :S1                    ; Skip if not GS
               LDX   #$00                   ; GCOL 'set' mode
@@ -1104,7 +1111,8 @@ VDU20LP       STA   TXTFGD,X               ; Clear all colours
               LDX   #$00                   ; GCOL 'set' mode
               PLA
               STA   GFXFGD                 ; Note gfx foreground
-              JSR   HGRSETGCOL             ; Set gfx foreground
+*             JSR   HGRSETGCOL             ; Set gfx foreground
+                                           ; DISABLE HGR
               BIT   VDUBANK
               BPL   :S2                    ; Skip if not GS
               LDX   #$00                   ; Default GCOL action
@@ -1126,7 +1134,9 @@ VDU17BORDER   AND   #$0F
               RTS
 
 * Helper function to set text FG/BG colour in HGR & SHR modes
-SETTCOL       JSR   HGRSETTCOL             ; Set txt foreground
+SETTCOL
+*             JSR   HGRSETTCOL             ; Set txt foreground
+                                           ; DISABLE HGR
               BIT   VDUBANK
               BPL   :NOTGS
 *             JSR   SHRSETTCOL             ; Set txt background
@@ -1159,7 +1169,8 @@ VDU18A        LDA   VDUQ+7                 ; GCOL action
               ROL   A
               PLP
               ROR   A                      ; Get bit 7 back
-              JMP   HGRSETGCOL
+*             JMP   HGRSETGCOL             ; DISABLE HGR
+              RTS
 
 * VDU 19 - Select palette colours
 * VDU 19, logcol, physcol, red, green, blue
@@ -1379,7 +1390,7 @@ GFXPLOTTER   LDX   #3
              BPL   :L1
              BIT   VDUSCREEN
              BPL   :S1
-             JSR   HGRPLOT
+*            JSR   HGRPLOT                 ; DISABLE HGR
              BRA   GFXPLOTTER2
 :S1          BVC   GFXPLOTTER2
              JSR   VDUCOPYMAIN             ; Copy VDUQ to main mem
