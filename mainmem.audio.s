@@ -517,8 +517,10 @@ CHECK4BYTES PHX
 AUDIOSTOP   LDA  AUDIOCARD
             BEQ  :MOCK
 *           JMP  ENSQSTOP                   ; DISABLE ENSONIQ
+            RTS
 :MOCK
 *           JMP  MOCKSTOP                   ; DISABLE MOCKINGBOARD
+            RTS
 
 
 * Configure an oscillator to play a note
@@ -529,8 +531,10 @@ AUDIONOTE   PHA
             BEQ   :MOCK
             PLA
 *           JMP  ENSQNOTE                   ; DISABLE ENSONIQ
+            RTS
 :MOCK       PLA
 *           JMP  MOCKNOTE                   ; DISABLE MOCKINGBOARD
+            RTS
 
 
 * Adjust frequency of  oscillator
@@ -539,8 +543,10 @@ AUDIONOTE   PHA
 AUDIOFREQ   LDA   AUDIOCARD
             BEQ   :MOCK
 *           JMP  ENSQFREQ                   ; DISABLE ENSONIQ
+            RTS
 :MOCK
 *           JMP  MOCKFREQ                   ; DISABLE MOCKINGBOARD
+            RTS
 
 
 * Adjust amplitude of  oscillator
@@ -549,8 +555,10 @@ AUDIOFREQ   LDA   AUDIOCARD
 AUDIOAMP    LDA   AUDIOCARD
             BEQ   :MOCK
 *           JMP  ENSQAMP                    ; DISABLE ENSONIQ
+            RTS
 :MOCK
 *           JMP  MOCKAMP                    ; DISABLE MOCKINGBOARD
+            RTS
 
 
 * Handle envelope tick counter
