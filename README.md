@@ -1,3 +1,9 @@
+# Foenixcorn
+
+This is eventually going to be a port of Applecorn (https://github.com/bobbimanners/Applecorn) to the 256 Foenix.
+
+...
+
 # Applecorn
 
 <img src="applecorn_v8.png" alt="Applecorn Logo" height="200px"/>
