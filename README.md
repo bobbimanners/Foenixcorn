@@ -3,8 +3,97 @@
 This is eventually going to be a port of Applecorn (https://github.com/bobbimanners/Applecorn)
 to the 256 Foenix.
 
+## Design Notes
+
+### Patched Language ROMs :(
+
 It looks like the Acorn language ROMs will have to be patched to replace any references to
 zero page addresses $00 and $01, because these control the MMU on Foenix hardware.
+
+### Foenix MMU
+
+The Foenix hardware includes an MMU:
+- Allows physical memory to be mapped into the address space in 8KB blocks.  There are
+  eight 8KB blocks, for 64KB total.
+- Supports four separate LUTs, allowing different mappings to be swapped 'instantly'.
+- Allows I/O to be enabled/disabled at page $C000
+- Controlled by registers at locations $00 and $01 in ZP
+
+### Use of MMU
+
+- At startup, map physical blocks $00, $01, $02, $04, $05, $06, $07.
+  This will be 'host mode', where we run Foenix 256 platform code.
+- The 'virtual BBC micro' will use completely separate blocks
+  $10, $11, $12, $13, $14, $15, $16, $17.  Note that the 'virtual BBC'
+  has it's own ZP, which is necessary.
+- To perform text and graphics operations, the I/O page can be mapped
+  into bank 6 (ie: $C000).  This means that code which writes to the
+  screen can NOT be in the Foenixcorn MOS which also resides in bank 6.
+- The Foenixcorn MOS must call out to code in a different bank in order
+  to do I/O.
+
+### Scaffolding
+
+Things we will need:
+- We need to be able to call 'host mode' code from the 'virtual BBC micro'
+  and return.
+- Call to host mode is currently done in macro `XF2MAIN` and `ENTMAIN`.
+- Return to virtual BBC mode is also an explicit jump (ie: no concept of
+  a return address, since there is no shared stack).  Uses macros `XF2AUX`
+  and `ENTAUX`.
+- For accessing memory mapped I/O, we need code in a separate block that
+  can be mapped in using the MMU.  This could be mapped into bank 1 or
+  2 (overlaying the language workspace).  It must not be bank 6, since
+  this is where I/O is mapped to.
+- To be able to pivot between host and virtual mode, and back, we need
+  a persistent block of code.  On the Apple II this is possible because
+  `XFER` is resident in 80 column firmware in $Cxxx I/O space (always
+  available, regardless of main or aux.)  We need to do something similar
+  using the MMU.
+- Let us use physical memory block $08 for the persistent code block
+  referred to above.
+
+So, for virtual BBC call to host:
+- Enable preconfigured LUT for virtual BBC with persistent code block
+  mapped to logical bank $05 (say).
+- Call into new `XFERHOST` routine in logical bank $05, which does the
+  following:
+  - Enable preconfigured LUT for host system with persistent code block
+    mapped to logical bank $05.  Don't want to map out the block from
+    under us!
+  - Jump to destination address in host memory.
+- On arrival at destination, the `ENTMAIN` macro can be repurposed
+  to switch to the proper 'host' LUT, without the persistent code
+  block in logical bank $05.
+- Presently argument passing is done in registers.  We will want
+  to maintain this.
+
+For host call back to virtual Beeb, it is the same in reverse:
+- Enable preconfigured LUT for host with persistent code block
+  mapped to logical bank $05 (say).
+- Call into new `XFERBEEB` routine in logical bank $05, which does the
+  following:
+  - Enable preconfigured LUT for virtual BBC system with persistent code
+    block mapped to logical bank $05.  Don't want to map out the block
+    from under us!
+  - Jump to destination address in Beeb memory (which will always be
+    in our MOS.)
+- On arrival at destination, the `ENTAUX` macro can be repurposed
+  to switch to the proper 'virtual BBC' LUT, without the persistent code
+  block in logical bank $05.
+- Presently retval passing is done in registers.  We will want
+  to maintain this.
+
+For writing to the screen:
+- Enable preconfigured LUT for virtual BBC with persistent code block
+  mapped to logical bank $05 (say).
+- Call new routine `FOENIXPRCH` which:
+  - Turns on the I/O bit
+  - Writes to the screen
+  - Turns off the I/O bit
+- Revert to original 'virtual BBC' LUT without the persistent code block.
+
+Applecorn docs follow ...
 
 # Applecorn
 
