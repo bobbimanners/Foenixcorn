@@ -1,8 +1,10 @@
 # Foenixcorn
 
-This is eventually going to be a port of Applecorn (https://github.com/bobbimanners/Applecorn) to the 256 Foenix.
+This is eventually going to be a port of Applecorn (https://github.com/bobbimanners/Applecorn)
+to the 256 Foenix.
 
-...
+It looks like the Acorn language ROMs will have to be patched to replace any references to
+zero page addresses $00 and $01, because these control the MMU on Foenix hardware.
 
 # Applecorn
 
