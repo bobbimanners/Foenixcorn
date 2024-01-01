@@ -516,7 +516,7 @@ CHECK4BYTES PHX
 * Stop the sound device (no more interrupts)
 AUDIOSTOP   LDA  AUDIOCARD
             BEQ  :MOCK
-            JMP  ENSQSTOP
+*           JMP  ENSQSTOP                   ; DISABLE ENSONIQ
 :MOCK
 *           JMP  MOCKSTOP                   ; DISABLE MOCKINGBOARD
 
@@ -528,7 +528,7 @@ AUDIONOTE   PHA
             LDA   AUDIOCARD
             BEQ   :MOCK
             PLA
-            JMP  ENSQNOTE
+*           JMP  ENSQNOTE                   ; DISABLE ENSONIQ
 :MOCK       PLA
 *           JMP  MOCKNOTE                   ; DISABLE MOCKINGBOARD
 
@@ -538,7 +538,7 @@ AUDIONOTE   PHA
 * Preserves X & Y
 AUDIOFREQ   LDA   AUDIOCARD
             BEQ   :MOCK
-            JMP  ENSQFREQ
+*           JMP  ENSQFREQ                   ; DISABLE ENSONIQ
 :MOCK
 *           JMP  MOCKFREQ                   ; DISABLE MOCKINGBOARD
 
@@ -548,7 +548,7 @@ AUDIOFREQ   LDA   AUDIOCARD
 * Preserves X & Y
 AUDIOAMP    LDA   AUDIOCARD
             BEQ   :MOCK
-            JMP  ENSQAMP
+*           JMP  ENSQAMP                    ; DISABLE ENSONIQ
 :MOCK
 *           JMP  MOCKAMP                    ; DISABLE MOCKINGBOARD
 
@@ -658,7 +658,8 @@ PITCHENV    LDA   CHANENV,X                 ; Get envelope number
 * Update pitch value. Called by PITCHENV.
 * On entry: A - Change of pitch/step, X is audio channel #
 * X is preserved
-UPDPITCH    STX   OSCNUM
+UPDPITCH
+*           STX   OSCNUM                    ; REMOVE ENSONIQ SUPPORT
             CLC
             ADC   CURRPITCH,X               ; Add change to current
             STA   CURRPITCH,X               ; Update
@@ -723,7 +724,8 @@ ADSRENV     LDA   CHANENV,X                 ; Get envelope number
 * Handle any individual phase of the ADSR envelope. Called by ADSRENV.
 * On entry: A - level at end of phase, X - audio channel, Y - change/step
 * On return: CS if end of phase, CC otherwise.  X preserved.
-ADSRPHASE   STX   OSCNUM
+ADSRPHASE
+*           STX   OSCNUM                    ; REMOVE ENSONIQ SUPPORT
             STA   :TARGET                   ; Stash target level for later
             CPY   #$00                      ; Check sign of change/step
             BEQ   :DONE                     ; Change/step is zero

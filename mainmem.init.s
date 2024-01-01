@@ -42,7 +42,7 @@ RESETHW      SEC
              STZ   AUDIOCARD
              JSR   IDROUTINE         ; See if this is a GS
              BCS   :NOTGS
-             JSR   ENSQINIT          ; Initialize Ensoniq
+*            JSR   ENSQINIT          ; Initialize Ensoniq
              INC   AUDIOCARD
              RTS                     ; AUDIOCARD=1
 :NOTGS

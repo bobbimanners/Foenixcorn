@@ -294,8 +294,8 @@ MAINZP      MAC
             PUT   MAINMEM.LISTS
             PUT   MAINMEM.MISC
             PUT   MAINMEM.AUDIO
-            PUT   MAINMEM.ENSQ
-            PUT   MAINMEM.ENSQFREQ
+*            PUT   MAINMEM.ENSQ
+*            PUT   MAINMEM.ENSQFREQ
 *            PUT   MAINMEM.MOCK
 *            PUT   MAINMEM.MOCKFREQ
             PUT   MAINMEM.FONT8
