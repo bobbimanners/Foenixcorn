@@ -32,6 +32,13 @@ The Foenix hardware includes an MMU:
 - The Foenixcorn MOS must call out to code in a different bank in order
   to do I/O.
 
+### Loader
+
+Must relocate as follows:
+- Up to 16KB of Foenixcorn MOS to physical blocks $16, $17.
+- Acorn language ROM to physical blocks $14, $15.
+- 'Persistent code block' to physical block $08.
+
 ### Scaffolding
 
 Things we will need:
