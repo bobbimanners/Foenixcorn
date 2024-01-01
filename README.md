@@ -89,7 +89,8 @@ For writing to the screen:
   mapped to logical bank $05 (say).
 - Call new routine `FOENIXPRCH` which:
   - Turns on the I/O bit
-  - Writes to the screen
+  - Writes to the screen - this will involve fiddling around with the I/O bank bits also
+    in order to access both character and colour data etc.
   - Turns off the I/O bit
 - Revert to original 'virtual BBC' LUT without the persistent code block.
 
