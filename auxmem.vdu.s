@@ -316,7 +316,7 @@ VDU127        JSR   VDU08                  ; Move cursor back
               LDA   VDUSTATUS
               AND   #$20                   ; Bit 5 VDU5 mode
               BEQ   :NOTVDU5
-              >>>   XF2MAIN,SHRVDU127
+*             >>>   XF2MAIN,SHRVDU127      ; DISABLE SHR
               RTS
 :NOTVDU5      LDA   #' '                   ; Overwrite with a space
               BRA   PUTCHRC
@@ -399,7 +399,8 @@ PRCHR7        PLA
               BPL   :NOTHGR
               JMP   HGRPRCHAR              ; Write character to HGR
 :NOTHGR       BVC   :NOTSHR
-              JMP   SHRPRCHAR              ; Write character to SHR
+*             JMP   SHRPRCHAR              ; Write character to SHR
+*                                          ; DISABLE SHR
 :NOTSHR       RTS
  
 
@@ -413,7 +414,8 @@ SHOWRDCURSOR  TAX                          ; Preserve character
 :SHR          TXA                          ; Recover character
               SEC                          ; CS: Show cursor
               CLV                          ; VC: Read cursor
-              JMP   SHRCURSOR
+*             JMP   SHRCURSOR              ; DISABLE SHR
+              RTS
 
 
 * Wrapper around PUTCHRC used when showing the write cursor
@@ -426,7 +428,8 @@ SHOWWTCURSOR  TAX                          ; Preserve character
 :SHR          TXA                          ; Recover character
               SEC                          ; CS: Show cursor
               BIT   SETV                   ; VS: Write cursor
-              JMP   SHRCURSOR
+*             JMP   SHRCURSOR              ; DISABLE SHR
+              RTS
 
 
 * Wrapper around PUTCHRC used when removing the read cursor
@@ -439,7 +442,8 @@ REMRDCURSOR   TAX                          ; Preserve character
 :SHR          TXA                          ; Recover character
               CLC                          ; CC: Remove cursor
               CLV                          ; VC: Read cursor
-              JMP   SHRCURSOR
+*             JMP   SHRCURSOR              ; DISABLE SHR
+              RTS
 
 
 * Wrapper around PUTCHRC used when removing the write cursor
@@ -452,7 +456,8 @@ REMWTCURSOR   TAX                          ; Preserve character
 :SHR          TXA                          ; Recover character
               CLC                          ; CC: Remove cursor
               BIT   SETV                   ; VS: Write cursor
-              JMP   SHRCURSOR
+*             JMP   SHRCURSOR              ; DISABLE SHR
+              RTS
 
 
 * Wrapper around OUTCHARCP used when drawing the read cursor
@@ -465,7 +470,7 @@ PUTCOPYCURS   TAX                          ; Preserve character
 :SHR          TXA                          ; Recover character
               CLC                          ; CC: Remove cursor
               CLV                          ; VC: Read cursor
-              JSR   SHRCURSOR
+*             JSR   SHRCURSOR              ; DISABLE SHR
               JMP   OUTCHARCP2
 
 
@@ -580,7 +585,8 @@ VDU08         LDA   VDUSTATUS
               BEQ   VDU08VDU4              ; VDU5 not in effect
               BIT   VDUSCREEN
               BVC   VDU08DONE              ; VDU5 but not SHR
-              >>>   XF2MAIN,SHRVDU08
+*             >>>   XF2MAIN,SHRVDU08       ; DISABLE SHR
+              RTS
 VDU08VDU4     LDA   VDUTEXTX               ; COL
               CMP   TXTWINLFT
               BEQ   :S1
@@ -601,7 +607,8 @@ VDU09         LDA   VDUSTATUS
               BEQ   VDU09VDU4              ; VDU5 not in effect
               BIT   VDUSCREEN
               BVC   VDU09DONE              ; VDU5 but not SHR
-              >>>   XF2MAIN,SHRVDU09
+*             >>>   XF2MAIN,SHRVDU09       ; DISABLE SHR
+              RTS
 VDU09VDU4     LDA   VDUTEXTX               ; COL
               CMP   TXTWINRGT
               BCC   VDU09RGHT
@@ -627,7 +634,8 @@ VDU10         LDA   VDUSTATUS
               BEQ   VDU10VDU4              ; VDU5 not in effect
               BIT   VDUSCREEN
               BVC   VDU10DONE              ; VDU5 but not SHR
-              >>>   XF2MAIN,SHRVDU10
+*             >>>   XF2MAIN,SHRVDU10       ; DISABLE SHR
+              RTS
 VDU10VDU4     JSR   VDUDOWN                ; Handle paged mode
               LDA   VDUTEXTY               ; ROW
               CMP   TXTWINBOT
@@ -642,7 +650,8 @@ VDU11         LDA   VDUSTATUS
               BEQ   VDU11VDU4              ; VDU5 not in effect
               BIT   VDUSCREEN
               BVC   VDU11DONE              ; VDU5 but not SHR
-              >>>   XF2MAIN,SHRVDU11
+*             >>>   XF2MAIN,SHRVDU11       ; DISABLE SHR
+              RTS
 VDU11VDU4     LDA   VDUTEXTY               ; ROW
               CMP   TXTWINTOP
               BNE   VDU11UP
@@ -664,7 +673,8 @@ VDU13         LDA   VDUSTATUS
               BEQ   VDU13VDU4              ; VDU5 not in effect
               BIT   VDUSCREEN
               BVC   VDU13DONE              ; VDU5 but not SHR
-              >>>   XF2MAIN,SHRVDU13
+*             >>>   XF2MAIN,SHRVDU13       ; DISABLE SHR
+              RTS
 VDU13VDU4     LDA   #$BF
               JSR   CLRSTATUS              ; Turn copy cursor off
               LDA   TXTWINLFT
@@ -750,7 +760,7 @@ VDU22         JSR   NEGCALL                ; Find machine type
               LDA   SCNPIXELS,X
               STA   VDUPIXELS              ; Pixels per byte
               >>>   WRTMAIN
-              STA   SHRPIXELS
+*             STA   SHRPIXELS              ; DISABLE SHR
               >>>   WRTAUX
               LDA   SCNTYPE,X
               STA   VDUSCREEN              ; Screen type
@@ -768,7 +778,8 @@ VDU22         JSR   NEGCALL                ; Find machine type
               BPL   :NOTHGR
               JMP   HGRVDU22               ; b7=1, HGR mode
 :NOTHGR       BVC   :NOTSHR
-              JMP   SHRVDU22               ; b6=1, SHR mode
+*             JMP   SHRVDU22               ; b6=1, SHR mode
+              RTS                          ; DISABLE SHR
 :NOTSHR       LDA   VDUSCREEN
               AND   #$01                   ; 40col/80col bit
               TAX
@@ -796,7 +807,8 @@ VDU12         STZ   FXLINES
               JSR   HGRCLREOL
               BRA   :NOTSHR
 :NOTHGR       BVC   :NOTSHR
-              JSR   SHRCLREOL
+*             JSR   SHRCLREOL              ; DISABLE SHR
+              RTS
 :NOTSHR       LDA   VDUTEXTY               ; ROW
               CMP   TXTWINBOT
               BEQ   :S1
@@ -847,7 +859,8 @@ CLREOLDONE    DEC   TXTWINRGT
               BPL   :NOHGR
               JMP   HGRCLREOL              ; Clear an HGR line
 :NOHGR        BVC   :NOSHR
-              JMP   SHRCLREOL              ; Clear an SHR line
+*             JMP   SHRCLREOL              ; Clear an SHR line
+              RTS                          ; DISABLE SHR
 :NOSHR        RTS
 CLREOLGS      BIT   RD80VID
               BPL   :FORTY                 ; 40-col mode
@@ -896,7 +909,8 @@ SCROLLER      LDA   TXTWINTOP
               JSR   HGRSCR1LINE            ; Scroll HGR screen
               BRA   :NOTSHR
 :NOTHGR       BVC   :NOTSHR
-              JSR   SHRSCR1LINE            ; Scroll SHR screen
+*             JSR   SHRSCR1LINE            ; Scroll SHR screen
+                                           ; DISABLE SHR
 :NOTSHR       PLA
               INC
               CMP   TXTWINBOT
@@ -920,7 +934,8 @@ RSCROLLER     DEC   TXTWINTOP
               JSR   HGRRSCR1LINE           ; Reverse scroll HGR screen
               BRA   :NOTSHR
 :NOTHGR       BVC   :NOTSHR
-              JSR   SHRRSCR1LINE           ; Reverse scroll SHR screen
+*             JSR   SHRRSCR1LINE           ; Reverse scroll SHR screen
+                                           ; DISABLE SHR
 :NOTSHR       PLA
               DEC   A
               CMP   TXTWINTOP
@@ -1050,7 +1065,7 @@ VDU16         BIT   VDUSCREEN
               BPL   :NOTHGR
               JMP   HGRCLEAR
 :NOTHGR       BVC   :NOTSHR
-              JMP   SHRCLEAR
+*             JMP   SHRCLEAR               ; DISABLE SHR
 :NOTSHR       RTS
 
 
@@ -1060,7 +1075,8 @@ VDU16         BIT   VDUSCREEN
 VDU20
               BIT   VDUBANK                ; Check if GS
               BPL   :S1                    ; If not, skip SHR call
-              JSR   SHRDEFPAL              ; Default palette
+*             JSR   SHRDEFPAL              ; Default palette
+                                           ; DISABLE SHR
               LDA   #$F0
               STA   TBCOLOR                ; Set text palette B&W
               STZ   CLOCKCTL               ; Set border
@@ -1078,7 +1094,8 @@ VDU20LP       STA   TXTFGD,X               ; Clear all colours
               BPL   :S1                    ; Skip if not GS
               LDX   #$00                   ; GCOL 'set' mode
               LDA   #$80                   ; Black background
-              JSR   SHRSETGCOL             ; Set SHR background
+*             JSR   SHRSETGCOL             ; Set SHR background
+                                           ; DISABLE SHR
 :S1           LDA   VDUCOLOURS
               AND   #$07
               PHA
@@ -1092,7 +1109,8 @@ VDU20LP       STA   TXTFGD,X               ; Clear all colours
               BPL   :S2                    ; Skip if not GS
               LDX   #$00                   ; Default GCOL action
               LDA   #$07                   ; White
-              JSR   SHRSETGCOL             ; Set SHR foreground
+*             JSR   SHRSETGCOL             ; Set SHR foreground
+                                           ; DISABLE SHR
 :S2           RTS
 
 * VDU 17 - COLOUR n - select text or border colour
@@ -1111,7 +1129,8 @@ VDU17BORDER   AND   #$0F
 SETTCOL       JSR   HGRSETTCOL             ; Set txt foreground
               BIT   VDUBANK
               BPL   :NOTGS
-              JSR   SHRSETTCOL             ; Set txt background
+*             JSR   SHRSETTCOL             ; Set txt background
+                                           ; DISABLE SHR
 :NOTGS        RTS
 
 
@@ -1132,7 +1151,8 @@ VDU18A        LDA   VDUQ+7                 ; GCOL action
               PLA
               BIT   VDUBANK
               BPL   :S1                    ; Skip if not GS
-              JSR   SHRSETGCOL             ; Set SHR background
+*             JSR   SHRSETGCOL             ; Set SHR background
+                                           ; DISABLE SHR
 :S1           TAY
               LDA   CLRTRANS8,Y            ; Trans. to physical
               PHP
@@ -1155,7 +1175,7 @@ VDU19         LDA   VDUQ+5                 ; Second parm
               BIT   VDUBANK                ; Check if GS
               BPL   :S1                    ; If not, skip SHR call
               TXA                          ; Copy log colour to A for call
-              >>>   XF2MAIN,SHRPALCHANGE
+*             >>>   XF2MAIN,SHRPALCHANGE   ; DISABLE SHR
 :S1           RTS
 :RGB          LDA   VDUQ+6                 ; 3rd parm (red)
               AND   #$0F
@@ -1175,10 +1195,11 @@ VDU19         LDA   VDUQ+5                 ; Second parm
               ORA   :TMP                   ; Green+Blue in A
               BIT   VDUBANK                ; Check if GS
               BPL   :S1                    ; If not, just return 
-              >>>   WRTMAIN
-              STX   SHRVDUQ                ; Stash X for call to main
-              >>>   WRTAUX
-              >>>   XF2MAIN,SHRPALCUSTOM
+*             >>>   WRTMAIN
+*             STX   SHRVDUQ                ; Stash X for call to main
+*             >>>   WRTAUX
+*             >>>   XF2MAIN,SHRPALCUSTOM
+              RTS                          ; DISABLE SHR
 :TMP          DB    $00
 
 
@@ -1201,7 +1222,8 @@ VDU26LP       STA   VDUVARS,X              ; Clear all windows
               BEQ   VDU26QUIT              ; No graphics
               BIT   VDUBANK                ; Is this a GS?
               BPL   VDU26PT2               ; Nope
-              >>>   XF2MAIN,SHRVDU26
+*             >>>   XF2MAIN,SHRVDU26       ; DISABLE SHR
+              RTS
 VDU26RET      >>>   ENTAUX
 VDU26PT2      LDX   #GFXWINRGT-VDUVARS
               JSR   VDU26SCALE             ; GFXWID=TXTWID*PIXELS-1
@@ -1258,12 +1280,13 @@ VDU24         BIT   VDUBANK                ; Check if this is a GS
               LDX   #$00
               >>>   WRTMAIN
 :L1           LDA   VDUQGFXWIND,X          ; Copy to main mem for SHR
-              STA   SHRVDUQ,X
+*             STA   SHRVDUQ,X              ; DISABLE SHR
               INX
               CPX   #$08
               BNE   :L1
               >>>   WRTAUX
-              >>>   XF2MAIN,SHRVDU24
+*             >>>   XF2MAIN,SHRVDU24       ; DISABLE SHR
+              RTS
 VDU24RET      >>>   ENTAUX
               LDY   #GFXWINLFT+7-VDUVARS   ; Copy to gfx window params
               LDA   #$08
@@ -1360,7 +1383,8 @@ GFXPLOTTER   LDX   #3
              BRA   GFXPLOTTER2
 :S1          BVC   GFXPLOTTER2
              JSR   VDUCOPYMAIN             ; Copy VDUQ to main mem
-             >>>   XF2MAIN,SHRPLOT
+*            >>>   XF2MAIN,SHRPLOT         ; DISABLE SHR
+             RTS
 GFXPLOTRET   >>>   ENTAUX
 GFXPLOTTER2  LDX   #0
 :L1          LDA   VDUQ+5,X
@@ -1413,14 +1437,15 @@ VDU23         BIT   VDUSCREEN               ; Check we are in SHR mode
               BVS   :SHR
               RTS
 :SHR          JSR   VDUCOPYMAIN             ; Copy VDUQ to main mem
-              >>>   XF2MAIN,SHRUSERCHAR
+*             >>>   XF2MAIN,SHRUSERCHAR     ; DISABLE SHR
+              RTS
 
 * Copy VDUQ to SHRVDUQ in main memory
 VDUCOPYMAIN   LDY   #$00
 :L1           LDA   VDUQ,Y                  ; Copy VDUQ to SHRVDUQ
-              >>>   WRTMAIN
-              STA   SHRVDUQ,Y
-              >>>   WRTAUX
+*             >>>   WRTMAIN
+*             STA   SHRVDUQ,Y               ; DISABLE SHR
+*             >>>   WRTAUX
               INY
               CPY   #16
               BNE   :L1
