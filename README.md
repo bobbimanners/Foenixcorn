@@ -87,7 +87,7 @@ For host call back to virtual Beeb, it is the same in reverse:
 For writing to the screen:
 - Enable preconfigured LUT for virtual BBC with persistent code block
   mapped to logical bank $05 (say).
-- Call new routine `FOENIXPRCH` which:
+- Call new routine `FOENIXPRCH` in logical bank $05 which:
   - Turns on the I/O bit
   - Writes to the screen - this will involve fiddling around with the I/O bank bits also
     in order to access both character and colour data etc.
