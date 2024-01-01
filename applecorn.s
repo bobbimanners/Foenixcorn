@@ -296,8 +296,8 @@ MAINZP      MAC
             PUT   MAINMEM.AUDIO
             PUT   MAINMEM.ENSQ
             PUT   MAINMEM.ENSQFREQ
-            PUT   MAINMEM.MOCK
-            PUT   MAINMEM.MOCKFREQ
+*            PUT   MAINMEM.MOCK
+*            PUT   MAINMEM.MOCKFREQ
             PUT   MAINMEM.FONT8
 
 * Automatically save the object file:
