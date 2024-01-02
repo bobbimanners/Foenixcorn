@@ -21,8 +21,9 @@ The Foenix hardware includes an MMU:
 
 ### Use of MMU
 
-- At startup, map physical blocks $00, $01, $02, $04, $05, $06, $07.
+- At startup, map physical blocks $00, $01, $02, $04, $05, $06, $xx.
   This will be 'host mode', where we run Foenix 256 platform code.
+  Where $xx is the flash block with the Foenix kernel.
 - The 'virtual BBC micro' will use completely separate blocks
   $10, $11, $12, $13, $14, $15, $16, $17.  Note that the 'virtual BBC'
   has it's own ZP, which is necessary.
