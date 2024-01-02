@@ -113,6 +113,8 @@ I don't think I am going to use the Foenix MicroKernel since it uses 3 of
 the 4 LUTs for its own purposes.
 
 I do plan to the use FAT32 / SD card library directly for file I/O support.
+Apparently there is a version available in Flash that has a jump table for
+the various entry points.  Sounds ideal!
 
 ### Interrupts
 
