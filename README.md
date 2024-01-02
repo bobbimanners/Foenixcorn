@@ -10,6 +10,10 @@ to the 256 Foenix.
 It looks like the Acorn language ROMs will have to be patched to replace any references to
 zero page addresses $00 and $01, because these control the MMU on Foenix hardware.
 
+A patched BBC BASIC v2 ROM already exists, because this was already ported to C64 back in
+the 1980s!  For the other languages, some work is required to find the references to 
+addresses $00 and $01 and modify them to somewhere else in page zero (MOS reserved space.)
+
 ### Foenix MMU
 
 The Foenix hardware includes an MMU:
