@@ -25,9 +25,8 @@ The Foenix hardware includes an MMU:
 
 ### Use of MMU
 
-- At startup, map physical blocks $00, $01, $02, $04, $05, $06, $xx.
+- At startup, map physical blocks $00, $01, $02, $04, $05, $06, $07.
   This will be 'host mode', where we run Foenix 256 platform code.
-  Where $xx is the flash block with the Foenix kernel.
 - The 'virtual BBC micro' will use completely separate blocks
   $10, $11, $12, $13, $14, $15, $16, $17.  Note that the 'virtual BBC'
   has it's own ZP, which is necessary.
@@ -107,6 +106,13 @@ For writing to the screen:
     in order to access both character and colour data etc.
   - Turns off the I/O bit
 - Revert to original 'virtual BBC' LUT without the persistent code block.
+
+### Libraries
+
+I don't think I am going to use the Foenix MicroKernel since it uses 3 of
+the 4 LUTs for its own purposes.
+
+I do plan to the use FAT32 / SD card library directly for file I/O support.
 
 ### Interrupts
 
