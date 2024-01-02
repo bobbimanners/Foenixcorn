@@ -103,6 +103,11 @@ For writing to the screen:
   - Turns off the I/O bit
 - Revert to original 'virtual BBC' LUT without the persistent code block.
 
+### Interrupts
+
+I know nothing of how Foenix handles interrupts (yet), but some care will be required
+when swapping bank 7, seeing as the vectors are there :)
+
 Applecorn docs follow ...
 
 # Applecorn
